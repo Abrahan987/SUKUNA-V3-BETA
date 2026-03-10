@@ -1,12 +1,11 @@
-> 🌧 Versión actual: ^3.0.0
+# SUKUNA V3
 
-<h1 align="center">💣 Megumin Bot</p>
-<p>
-        <img src= "https://files.catbox.moe/mwi0gz.jpg">
-    </p>
+WhatsApp bot multi-funcional basado en `baileys`.
 
 ---
 
-## Descripción
+## Creador
+- **ABRAHAN-M**
 
-Megumin es un bot de WhatsApp multifuncional basado en `baileys`. Este bot ofrece una variedad de características para mejorar tu experiencia en WhatsApp.
+## Descripción
+Base sólida y personalizada para el desarrollo de nuevas funciones.

@@ -1,5 +1,5 @@
 import "./settings.js"
-import handler from './main.js'
+import handler from './engine.js'
 import events from './commands/events.js'
 import {
   Browsers,
@@ -22,7 +22,7 @@ import os from "os";
 import qrcode from "qrcode-terminal";
 import parsePhoneNumber from "awesome-phonenumber";
 import { smsg } from "./lib/message.js";
-import db from "./lib/system/database.js";
+import db from "./lib/kernel/store.js";
 import { startSubBot } from './lib/subs.js';
 import { exec, execSync } from "child_process";
 import moment from 'moment-timezone';
@@ -96,8 +96,8 @@ export async function uPLoader() {
   const STEPS = 100
   const BAR_SIZE = 40
 
-  const TITLE = 'MEGUMIN-BOT-MD'
-  const SUB = 'powered by David-Chian'
+  const TITLE = 'SUKUNA-V3-MD'
+  const SUB = 'powered by ABRAHAN-M'
 
   let typedTitle = ''
   let typedSub = ''
@@ -135,13 +135,13 @@ export async function uPLoader() {
   }
 
   console.clear()
-  cfonts.say('MEGUMIN-BOT-MD', {
+  cfonts.say('SUKUNA-V3-MD', {
     font: 'block',
     align: 'center',
     colors: ['red']
   })
 
-  cfonts.say('powered by David-Chian', {
+  cfonts.say('powered by ABRAHAN-M', {
     font: 'console',
     align: 'center',
     gradient: ['blue', 'cyan']

@@ -2,9 +2,9 @@ import ws from 'ws'
 import moment from 'moment'
 import chalk from 'chalk'
 import gradient from 'gradient-string'
-import loadCommandsAndPlugins from './lib/system/commandLoader.js'
-import initDB from './lib/system/initDB.js'
-import { resolveLidToRealJid } from './lib/utils.js'
+import loadCommandsAndPlugins from './lib/core/commands.js'
+import initDB from './lib/core/config.js'
+import { resolveLidToRealJid } from './lib/functions.js'
 
 loadCommandsAndPlugins()
 
