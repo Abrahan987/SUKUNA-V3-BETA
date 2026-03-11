@@ -22,7 +22,7 @@ import os from "os";
 import qrcode from "qrcode-terminal";
 import parsePhoneNumber from "awesome-phonenumber";
 import { smsg } from "./lib/message.js";
-import db from "./lib/kernel/store.js";
+import db from "./lib/core/database.js";
 import { startSubBot } from './lib/subs.js';
 import { exec, execSync } from "child_process";
 import moment from 'moment-timezone';
@@ -52,13 +52,18 @@ const print = (label, value) =>
 const pairingCode = process.argv.includes("--qr")
   ? false
   : process.argv.includes("--pairing-code") || global.pairing_code;
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+function createRl() {
+  return readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+}
+
 const question = (text) => {
+  const rl = createRl()
   return new Promise((resolve) => {
     rl.question(text, (answer) => {
+      rl.close()
       resolve(answer.trim());
     });
   });
