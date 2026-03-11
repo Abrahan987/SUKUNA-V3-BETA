@@ -6,9 +6,14 @@ import loadCommandsAndPlugins from './lib/core/commands.js'
 import initDB from './lib/core/config.js'
 import { resolveLidToRealJid } from './lib/functions.js'
 
-loadCommandsAndPlugins()
+let commandsLoaded = false
+const loadingPromise = loadCommandsAndPlugins().then(() => {
+    commandsLoaded = true
+    console.log(chalk.green('✅ Todos los comandos han sido cargados.'))
+})
 
 export default async (client, m) => {
+    if (!commandsLoaded) await loadingPromise
     if (!m.message) return
 
 if (global.middlewares?.before?.length) {
@@ -67,15 +72,7 @@ const isGroup = m.isGroup
         `\n${h}\n${chalk.bold.yellow(`${v} Fecha: ${chalk.whiteBright(moment().format('DD/MM/YY HH:mm:ss'))}`)}\n${chalk.bold.blueBright(`${v} Usuario: ${chalk.whiteBright(pushname)}`)}\n${chalk.bold.magentaBright(`${v} Remitente: ${gradient('deepskyblue', 'darkorchid')(sender)}`)}\n${isGroup ? chalk.bold.cyanBright(`${v} Grupo: ${chalk.greenBright(groupName)}\n${v} ID: ${gradient('violet', 'midnightblue')(from)}\n`) : chalk.bold.greenBright(`${v} Chat privado\n`)}${h}`
     )
 
-    let body =
-        m.message.conversation ||
-        m.message.extendedTextMessage?.text ||
-        m.message.imageMessage?.caption ||
-        m.message.videoMessage?.caption ||
-        m.message.buttonsResponseMessage?.selectedButtonId ||
-        m.message.listResponseMessage?.singleSelectReply?.selectedRowId ||
-        m.message.templateButtonReplyMessage?.selectedId ||
-        ""
+    let body = m.body || ""
 
     initDB(m, client)
 
@@ -113,6 +110,10 @@ const isGroup = m.isGroup
 
     globalThis.prefix = new RegExp(`^(${nombresEscapados})?[${prefijosEscapados}]+`, "i")
 
+    // Debugging logs
+    // console.log(chalk.gray(`[ DEBUG ] Body: "${body}"`))
+    // console.log(chalk.gray(`[ DEBUG ] Regex: ${globalThis.prefix}`))
+
     for (const name in global.plugins) {
         const plugin = global.plugins[name]
         if (typeof plugin.before === "function") {
@@ -126,9 +127,17 @@ const isGroup = m.isGroup
     }
 
     const prefixMatch = body.match(globalThis.prefix)
-    if (!prefixMatch) return
-
-    usedPrefix = prefixMatch[0]
+    if (!prefixMatch) {
+        // Fallback simple si el regex complejo falla para un solo prefijo
+        const simplePrefix = prefas.find(p => body.startsWith(p))
+        if (simplePrefix) {
+            usedPrefix = simplePrefix
+        } else {
+            return
+        }
+    } else {
+        usedPrefix = prefixMatch[0]
+    }
 
     const noPrefix = body.slice(usedPrefix.length).trim()
     const args = noPrefix.split(/ +/)
