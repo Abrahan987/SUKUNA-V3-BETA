@@ -1,10 +1,11 @@
 import moment from 'moment-timezone'
+import chalk from 'chalk'
 
 const menu = {
     command: ['menu', 'help'],
     category: 'main',
     run: async ({ client, m, usedPrefix }) => {
-        const videoUrl = 'https://files.catbox.moe/ucanar.mp4'
+        const videoUrl = 'https://spacny.wuaze.com//uploads/VID-20260311-WA0035.mp4'
         const botId = client.user.id.split(':')[0] + '@s.whatsapp.net'
         const settings = global.db.data.settings[botId] || {}
 
@@ -31,30 +32,10 @@ const menu = {
         caption += `┌───⊷ *LISTA DE COMANDOS*\n`
 
         const categorized = {}
-
-        // Obtenemos los comandos únicos basados en su implementación (pluginName)
-        // para evitar duplicados si tienen múltiples triggers
-        const seenPlugins = new Set()
-
-        global.comandos.forEach((cmd, trigger) => {
+        global.comandos.forEach((cmd) => {
             if (!categorized[cmd.category]) categorized[cmd.category] = []
-
-            // Queremos listar el trigger principal o el comando como tal
-            // En este sistema, registramos cada trigger individualmente.
-            // Para el menú, podemos agrupar por pluginName y mostrar sus triggers.
-
-            if (!seenPlugins.has(cmd.pluginName)) {
-                seenPlugins.add(cmd.pluginName)
-                // Buscamos todos los triggers asociados a este plugin
-                const triggers = []
-                global.comandos.forEach((c, t) => {
-                    if (c.pluginName === cmd.pluginName) triggers.push(t)
-                })
-
-                categorized[cmd.category].push({
-                    name: cmd.pluginName,
-                    triggers: triggers
-                })
+            if (!categorized[cmd.category].includes(cmd.pluginName)) {
+                categorized[cmd.category].push(cmd.pluginName)
             }
         })
 
@@ -62,7 +43,7 @@ const menu = {
             caption += `│\n`
             caption += `│ ⟣ *${category.toUpperCase()}*\n`
             categorized[category].forEach(cmd => {
-                caption += `│ ◍ ${usedPrefix}${cmd.triggers.join(`, ${usedPrefix}`)}\n`
+                caption += `│ ◍ ${usedPrefix}${cmd}\n`
             })
         }
 
