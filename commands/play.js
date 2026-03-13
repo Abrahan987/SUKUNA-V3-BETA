@@ -1,4 +1,4 @@
- import yts from 'yt-search'
+import yts from 'yt-search'
 import fetch from 'node-fetch'
 import sharp from 'sharp'
 import axios from 'axios'
@@ -9,7 +9,6 @@ export default {
 
   run: async ({ client, m, args, command, text }) => {
     try {
-
       if (!text.trim()) {
         return client.reply(m.chat, '✎ Ingresa el nombre de la música o una URL de YouTube.', m)
       }
@@ -32,7 +31,7 @@ export default {
         const ago = videoInfo.ago || 'Desconocido'
 
         const infoMessage = `
-*𖹭.╭╭ִ╼ׅ࣪ﮩ٨ـﮩ𝗒𝗈𝗎𝗍𝗎𝗏𝖾-𝗉꯭𝗅꯭𝖺꯭𝗒ﮩ٨ـﮩׅ╾࣪╮╮.𖹭*
+*𖹭.╭╭ִ╼ׅ࣪ﮩ٨ـﮩ𝗒𝗈𝗎𝗍𝗎𝗏𝖾-𝗉꯭𝗅꯭𝖺꯭𝗒ﮩ٨ـﮩׅ╾࣪╮╮.𖹭*
 > ♡ *Título:* ${title || 'Desconocido'}
 > ♡ *Duración:* ${timestamp}
 > ♡ *Vistas:* ${vistas}
@@ -63,21 +62,22 @@ export default {
         }
       }
 
-      const api = `https://optishield.uk/api/rest/?apikey=prueba&type=youtubedl&url=${encodeURIComponent(url)}`
-      const { data } = await axios.get(api)
+      const api = `https://rest.apicausas.xyz/api/v1/descargas/youtube?apikey=causa-ee5ee31dcfc79da4&url=${encodeURIComponent(url)}&type=audio`
+      const { data: res } = await axios.get(api)
 
-      if (!data || !data.url) {
+      if (!res.status || !res.data?.download?.url) {
         return m.reply('✎ No se pudo obtener el audio.')
       }
 
-      const dl = data.url
-      const finalTitle = data.title || title || 'audio'
+      const dl = res.data.download.url
+      const finalTitle = res.data.title || title || 'audio'
+      const thumbnailToProcess = res.data.thumbnail || videoInfo?.thumbnail
 
       let thumbBuffer = null
 
-      if (videoInfo?.thumbnail) {
+      if (thumbnailToProcess) {
         try {
-          const response = await fetch(videoInfo.thumbnail)
+          const response = await fetch(thumbnailToProcess)
           const arrayBuffer = await response.arrayBuffer()
 
           thumbBuffer = await sharp(Buffer.from(arrayBuffer))
@@ -103,4 +103,4 @@ export default {
       m.reply(`Error:\n${error.message}`)
     }
   }
-  }
+}
